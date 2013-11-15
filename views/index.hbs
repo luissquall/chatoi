@@ -28,7 +28,30 @@
 		{{> navbar}}
 
 		<div class="container">
+			<h1>Chat</h1>
 
+			<div id='app-alert'></div>
+			
+			{{#unless auth}}
+			<div class='row'>
+				<div class='col-xs-4'>
+					{{test}}
+					<form id='signin-form' role="form" action="/authentication.json" method="POST" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="input-name">Username</label>
+							<input type="text" class="form-control" id="input-name" placeholder="Enter name" name="username" data-trigger="focus" data-container="body" data-content="Your username cannot be longer than 8 characters and it can only contain alphanumeric characters (letters A-Z, numbers 0-9) with the exception of underscores">
+						</div>
+
+						<div class="form-group">
+							<label for="input-image">Profile picture</label>
+							<input type="file" id="input-image" name="image">
+						</div>
+
+						<button id='signin-btn' type="submit" class="btn btn-primary">Sign in</button>
+					</form>	
+				</div>
+			</div>
+			{{/unless}}
 
 		</div> <!-- /container -->
 
@@ -38,5 +61,7 @@
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="/components/jquery/jquery.min.js"></script>
 		<script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="/javascripts/core.js"></script>
+		<script src="/javascripts/index.js"></script>
 	</body>
 </html>
