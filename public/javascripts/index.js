@@ -34,7 +34,7 @@
 			}).fail(function(jqXHR) {
 				var data = jqXHR.responseJSON;
 
-				$('#app-alert').removeClass()
+				$('#signin-status').removeClass()
 					.addClass('alert alert-danger')
 					.html(data.error.message);
 			});
