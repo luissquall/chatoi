@@ -1,0 +1,8 @@
+#chat-window {
+  height: 300px;
+  overflow-y: auto;
+}
+.message-item .user-image {
+  width: 48px;
+  height: 48px;
+}

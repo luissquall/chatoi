@@ -14,6 +14,7 @@
 
 		<!-- Custom styles for this template -->
 		<link href="/stylesheets/core.css" rel="stylesheet">
+		<link href="/stylesheets/index.css" rel="stylesheet">
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -61,15 +62,54 @@
 			</div>
 			{{/unless}}
 
+			{{#if auth}}
+			<!-- Chat panel -->
+			<div id='chat-panel' class='panel panel-info'>
+				<div class='panel-heading'>
+					<h3 class='panel-title'>Connecting...</h3>
+				</div>
+
+				<div class='panel-body'>
+					<ul id='chat-window' class="media-list">
+					</ul>
+
+					<div class="form-group">
+						<input type="text" class="form-control" id="input-message" placeholder="" name="message" autofocus disabled>
+					</div>
+				</div>
+			</div> <!-- / Chat panel -->
+			{{/if}}
 		</div> <!-- /container -->
 
+
+		{{#if auth}}
+		<!-- Templates -->
+		<script id="message-template" type="text/x-handlebars-template">
+			<li class="media message-item">
+				<div class="pull-left">
+					<img class="media-object user-image " src="[[user.image]]" alt="[[user.username]]" />
+				</div>
+
+				<div class="media-body">
+					<h4 class="media-heading"><span class='user-username'>[[user.username]]</span> <small><time class="message-created" datetime="[[created]]">[[ago]]</time></small></h4>
+					<div class="message-content">
+						[[content]]
+					</div>		
+				</div>
+			</li>
+		</script>
+		{{/if}}
 
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="/components/jquery/jquery.min.js"></script>
 		<script src="/components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="/components/socket.io-client/dist/socket.io.min.js"></script>
+		<script src="/components/moment/min/moment.min.js"></script>
+		<script src="/components/handlebars/handlebars.min.js"></script>
 		<script src="/javascripts/core.js"></script>
+		<script src="/javascripts/chat.js"></script>
 		<script src="/javascripts/index.js"></script>
 	</body>
 </html>

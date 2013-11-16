@@ -1,7 +1,8 @@
 (function(window, document, undefined) {
 	'use strict';
 
-	var chatoi = window.chatoi;
+	var chatoi = window.chatoi,
+		Chat = chatoi.Chat;
 
 	var IndexApp = {
 		load: function() {
@@ -9,13 +10,17 @@
 		},
 
 		init: function() {
-			$('#signin-btn').on('click', $.proxy(this._signinBtnClick, this));
-
 			// Popovers
 			$('#input-name').popover();
+
+			// Events listeners
+			$('#signin-btn').on('click', $.proxy(this._onSigninBtnClick, this));
+
+			// Chat
+			Chat.connect('http://localhost:3000/chat');
 		},
 
-		_signinBtnClick: function(e) {
+		_onSigninBtnClick: function(e) {
 			e.preventDefault();
 
 			this.sendForm($('#signin-form')[0]);

@@ -2,12 +2,21 @@
  * Module dependencies.
  */
 var express = require('express');
-var routes = require('./routes');
-var http = require('http');
-var path = require('path');
-var hbs = require('hbs');
+	http = require('http'),
+	path = require('path'),
+	hbs = require('hbs'),
+	moment = require('moment'),
+	routes = require('./routes');
 
-var app = express();
+const 	SECRET = 'secret monkey',
+		KEY = 'chatoi.sid';
+
+var app = express(),
+	cookie = express.cookieParser(SECRET),
+	store = new express.session.MemoryStore(),
+	server,
+	io,
+	chat;
 
 // Views
 hbs.registerPartials(__dirname + '/views/partials');
@@ -22,15 +31,15 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.multipart());
 app.use(express.methodOverride());
-app.use(express.cookieParser('secret monkey'));
-app.use(express.session({secret: 'monkey business', cookie: {maxAge: null}}));
+app.use(cookie);
+app.use(express.session({secret: SECRET, key: KEY, store: store}));
 app.use(app.router);
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+	app.use(express.errorHandler());
 }
 
 // Routes
@@ -49,7 +58,42 @@ app.get('/signout', routes.signout);
 app.post('/authentication.json', routes.authentication);
 
 
-// Create server
-http.createServer(app).listen(app.get('port'), '0.0.0.0', function(){
-  console.log('Express server listening on port ' + app.get('port'));
+// Create servers
+server = http.createServer(app);
+// WebSockets server
+io = require('socket.io').listen(server);
+// HTTP server
+server.listen(app.get('port'), '0.0.0.0', function(){
+	console.log('Express server listening on port ' + app.get('port'));
 });
+
+// Chat channel
+chat = io
+	.of('/chat')
+	.authorization(function(handshake, callback) {
+		cookie(handshake, {}, function(err) {
+			if (!err) {
+				var sessionID = handshake.signedCookies[KEY];
+				store.get(sessionID, function(err, session) {
+					if (err || !session || !session.auth) {
+						callback(null, false);
+					} else {
+						handshake.session = session;
+						callback(null, true);
+					}
+				});
+			} else {
+				callback(null, false);
+			}
+		});
+	})
+	.on('connection', function (socket) {
+		var session = socket.handshake.session,
+			auth = session.auth;
+
+		socket.on('message', function(data) {
+			data.user = auth;
+			data.created = moment().format();
+			chat.emit('message', data);
+		});
+	});
