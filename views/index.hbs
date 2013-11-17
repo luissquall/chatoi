@@ -71,6 +71,20 @@
 
 				<div class='panel-body'>
 					<ul id='chat-window' class="media-list">
+						{{#each messages}}
+						<li class="media message-item">
+							<div class="pull-left">
+								<img class="media-object user-image " src="{{this.user.image}}" alt="{{this.user.username}}" />
+							</div>
+
+							<div class="media-body">
+								<h4 class="media-heading"><span class='user-username'>{{this.user.username}}</span> <small><time class="message-created" datetime="{{this.created}}">{{this.ago}}</time></small></h4>
+								<div class="message-content">
+									{{this.content}}
+								</div>		
+							</div>
+						</li>
+						{{/each}}
 					</ul>
 
 					<div class="form-group">

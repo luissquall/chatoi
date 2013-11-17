@@ -12,15 +12,29 @@ exports.beforeFilter = function(req, res, next) {
 /**
  * Pages
  */
-exports.index = function(req, res){
-	res.render('index');
+exports.index = function(req, res) {
+	var moment = require('moment');
+
+	var sess = req.session,
+		messages;
+
+	if (sess.auth) {
+		messages = Chat.findMessagesSince(sess.auth.accessDate);
+		for (var index = 0, length = messages.length; index < length; index++) {
+			messages[index].ago = moment(messages[index].created).fromNow();
+		}
+	}
+
+	res.render('index', {
+		messages: messages
+	});
 };
 
-exports.about = function(req, res){
+exports.about = function(req, res) {
 	res.render('about');
 };
 
-exports.contact = function(req, res){
+exports.contact = function(req, res) {
 	if (req.method == 'POST') {
 		// Modules
 		var nodemailer = require('nodemailer'),
@@ -55,7 +69,7 @@ exports.contact = function(req, res){
 		res.render('contact');
 	}
 };
-exports.signout = function(req, res){
+exports.signout = function(req, res) {
 	var sess = req.session;
 	if (sess.auth) {
 		Chat.removeUser(sess.auth.username)
@@ -69,7 +83,7 @@ exports.signout = function(req, res){
  * Services
  */
 
-exports.authentication = function(req, res){
+exports.authentication = function(req, res) {
 	// Modules
 	var fs = require('fs'),
 		path = require('path'),
@@ -95,7 +109,7 @@ exports.authentication = function(req, res){
 		data: {
 			username: data.username,
 			image: '/images/users/avatar.png',
-			accessDate: moment()
+			accessDate: moment().format('X')
 		}
 	};
 
