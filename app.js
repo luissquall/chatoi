@@ -6,7 +6,6 @@ var express = require('express');
 	path = require('path'),
 	hbs = require('hbs'),
 	moment = require('moment'),
-	routes = require('./routes'),
 	Chat = require('./lib/chat');
 
 // Constants
@@ -19,6 +18,11 @@ var app = express(),
 	store = new express.session.MemoryStore(),
 	server,
 	channel;
+
+// Routes
+var pages = require('./routes/pages'),
+	services = require('./routes/services');
+
 
 // Views
 hbs.registerPartials(__dirname + '/views/partials');
@@ -47,17 +51,17 @@ if ('development' == app.get('env')) {
 // Routes
 
 // All
-app.all('*', routes.beforeFilter);
+app.all('*', pages.beforeFilter);
 
 // Pages
-app.get('/', routes.index);
-app.get('/about', routes.about);
-app.get('/contact', routes.contact);
-app.post('/contact', routes.contact);
-app.get('/signout', routes.signout);
+app.get('/', pages.index);
+app.get('/about', pages.about);
+app.get('/contact', pages.contact);
+app.post('/contact', pages.contact);
+app.get('/signout', pages.signout);
 
 // Services
-app.post('/authentication.json', routes.authentication);
+app.post('/authentication.json', services.authentication);
 
 
 // Create servers
