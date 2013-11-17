@@ -1,8 +1,5 @@
-var chatoi = {
-	users: {
-		chatoi: {username: 'chatoi'}
-	}
-}
+// Modules
+var Chat = require('../lib/chat');
 
 /**
  * Callbacks
@@ -61,7 +58,7 @@ exports.contact = function(req, res){
 exports.signout = function(req, res){
 	var sess = req.session;
 	if (sess.auth) {
-		delete chatoi.users[sess.auth.username];
+		Chat.removeUser(sess.auth.username)
 		sess.destroy()
 	}
 
@@ -76,7 +73,8 @@ exports.authentication = function(req, res){
 	// Modules
 	var fs = require('fs'),
 		path = require('path'),
-		crypto = require('crypto');
+		crypto = require('crypto'),
+		moment = require('moment');
 
 	var data = req.body,
 		image = req.files.image && req.files.image.size  ? req.files.image : null,
@@ -87,7 +85,7 @@ exports.authentication = function(req, res){
 		return res.json(400, {error: {code: 404, message: 'Username format invalid.'}})
 	}
 	// Username availability
-	if (chatoi.users[data.username]) {
+	if (Chat.findUser(data.username)) {
 		return res.json(400, {error: {code: 404, message: 'Username taken.'}})
 	}
 
@@ -96,7 +94,8 @@ exports.authentication = function(req, res){
 		code: 200,
 		data: {
 			username: data.username,
-			image: '/images/users/avatar.png'
+			image: '/images/users/avatar.png',
+			accessDate: moment()
 		}
 	};
 
@@ -112,12 +111,12 @@ exports.authentication = function(req, res){
 			}
 
 			body.data.image = '/images/users/' + filename;
-			chatoi.users[data.username] = body.data;
+			Chat.addUser(body.data);
 			req.session.auth = body.data;
 			res.json(body);
 		});
 	} else {
-		chatoi.users[data.username] = body.data;
+		Chat.addUser(body.data);
 		req.session.auth = body.data;
 		res.json(body);
 	}

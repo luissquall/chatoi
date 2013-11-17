@@ -6,17 +6,19 @@ var express = require('express');
 	path = require('path'),
 	hbs = require('hbs'),
 	moment = require('moment'),
-	routes = require('./routes');
+	routes = require('./routes'),
+	Chat = require('./lib/chat');
 
+// Constants
 const 	SECRET = 'secret monkey',
 		KEY = 'chatoi.sid';
 
+// Application
 var app = express(),
 	cookie = express.cookieParser(SECRET),
 	store = new express.session.MemoryStore(),
 	server,
-	io,
-	chat;
+	channel;
 
 // Views
 hbs.registerPartials(__dirname + '/views/partials');
@@ -60,40 +62,15 @@ app.post('/authentication.json', routes.authentication);
 
 // Create servers
 server = http.createServer(app);
-// WebSockets server
-io = require('socket.io').listen(server);
 // HTTP server
 server.listen(app.get('port'), '0.0.0.0', function(){
 	console.log('Express server listening on port ' + app.get('port'));
 });
 
 // Chat channel
-chat = io
-	.of('/chat')
-	.authorization(function(handshake, callback) {
-		cookie(handshake, {}, function(err) {
-			if (!err) {
-				var sessionID = handshake.signedCookies[KEY];
-				store.get(sessionID, function(err, session) {
-					if (err || !session || !session.auth) {
-						callback(null, false);
-					} else {
-						handshake.session = session;
-						callback(null, true);
-					}
-				});
-			} else {
-				callback(null, false);
-			}
-		});
-	})
-	.on('connection', function (socket) {
-		var session = socket.handshake.session,
-			auth = session.auth;
-
-		socket.on('message', function(data) {
-			data.user = auth;
-			data.created = moment().format();
-			chat.emit('message', data);
-		});
-	});
+channel = Chat.create({
+	server: server,
+	cookie: cookie,
+	store: store,
+	key: KEY
+});
