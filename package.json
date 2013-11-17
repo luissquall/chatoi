@@ -1,7 +1,15 @@
 {
   "name": "chatoi",
+  "description": "Real time chat",
   "version": "0.0.1",
-  "private": true,
+  "author": "\"mono\" Luis Ramos (http://twitter.com/luissquall)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:luissquall/chatoi.git"
+  },
+  "bugs": {
+    "url": "http://github.com/luissquall/chatoi/issues"
+  },
   "scripts": {
     "start": "node app.js"
   },
