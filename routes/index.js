@@ -41,6 +41,7 @@ exports.contact = function(req, res) {
 			Handlebars = require('handlebars');
 
 		var conf = require('../config/email.json'),
+			app = require('../config/app.json'),
 			transport = nodemailer.createTransport("SMTP", conf),
 			htmlTemplate = Handlebars.compile("<h1>{{name}} wrote you:</h1><p>{{message}}</p>"),
 			textTemplate = Handlebars.compile("{{name}} wrote you: {{message}}"),
@@ -48,9 +49,9 @@ exports.contact = function(req, res) {
 
 
 		mailOptions = {
-			from: "Luis <luissquall@gmail.com>",
-			to: "luissquall@gmail.com",
-			subject: "Chatoi Contact",
+			from: app.contact.from,
+			to: app.contact.to,
+			subject: app.contact.subject,
 			replyTo: req.body.email,
 			text: textTemplate(req.body),
 			html: htmlTemplate(req.body)

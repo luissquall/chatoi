@@ -1,3 +1,4 @@
 node_modules
 config/email.json
+config/app.json
 public/images/users/

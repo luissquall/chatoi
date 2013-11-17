@@ -1,0 +1,7 @@
+{
+	"contact": {
+		"from": "Name <username@domain.com>",
+		"to": "username@domain.com",
+		"subject": "Chatoi Contact"
+	}
+}
