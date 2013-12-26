@@ -16,3 +16,7 @@ From the command line:
 
 1. socket.io: Authorizing, [https://github.com/LearnBoost/socket.io/wiki/Authorizing](https://github.com/LearnBoost/socket.io/wiki/Authorizing)
 2. Underground WebDev: Node.js: Express, Socket.IO e Sessions, [http://udgwebdev.com/nodejs-express-socketio-e-sessions/](http://udgwebdev.com/nodejs-express-socketio-e-sessions/)
+
+## Acknowledgements
+
+Thanks to Wassim for the original [Abstract Monkey Icon](http://www.blugraphic.com/2012/05/10/abstract-mokey-icon-2/).
