@@ -4,7 +4,7 @@
 var express = require('express');
 	http = require('http'),
 	path = require('path'),
-	hbs = require('hbs'),
+	swig = require('swig'),
 	moment = require('moment'),
 	Chat = require('./lib/chat');
 
@@ -23,14 +23,15 @@ var app = express(),
 var pages = require('./routes/pages'),
 	services = require('./routes/services');
 
-
 // Views
-hbs.registerPartials(__dirname + '/views/partials');
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
 
 // All environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+
+// Middleware
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -45,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Development only
 if ('development' == app.get('env')) {
+	swig.setDefaults({ cache: false });
 	app.use(express.errorHandler());
 }
 

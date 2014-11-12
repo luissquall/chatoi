@@ -38,13 +38,13 @@ exports.contact = function(req, res) {
 	if (req.method == 'POST') {
 		// Modules
 		var nodemailer = require('nodemailer'),
-			Handlebars = require('handlebars');
+			swig = require('swig');
 
 		var conf = require('../config/email.json'),
 			app = require('../config/app.json'),
 			transport = nodemailer.createTransport("SMTP", conf),
-			htmlTemplate = Handlebars.compile("<h1>{{name}} wrote you:</h1><p>{{message}}</p>"),
-			textTemplate = Handlebars.compile("{{name}} wrote you: {{message}}"),
+			htmlTemplate = swig.compile("<h1>{{name}} wrote you:</h1><p>{{message}}</p>"),
+			textTemplate = swig.compile("{{name}} wrote you: {{message}}"),
 			mailOptions;
 
 
